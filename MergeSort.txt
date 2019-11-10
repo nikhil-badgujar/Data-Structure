@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class mergeSort
+{
+
+	vector<int> array;
+
+	void merge(int left, int right)
+	{
+		int mid = left + (right - left) / 2;
+
+		vector<int> leftArray, rightArray;
+
+		for(int i = 0; i <= mid; i++)
+			leftArray.push_back(array[i]);
+
+		for(int i = mid + 1; i <= right; i++)
+			rightArray.push_back(array[i]);
+
+		int l = 0, r = 0, i = left;
+
+		while ( l < leftArray.size() && r < rightArray.size() )
+		{
+			while (leftArray[l] < rightArray[r])
+				array[i++] = leftArray[l++];
+
+			while (leftArray[l] > rightArray[r])
+				array[i++] = rightArray[r++];
+		}
+        
+        while (l < leftArray.size())
+            array[i++] = leftArray[l++];
+
+        while (r < rightArray.size())
+            array[i++] = rightArray[r++];
+	}
+
+    void sort(int left, int right)
+	{
+	    if( left < right )
+		{
+			int mid = (left + right) / 2;
+            sort(left, mid);
+            sort(mid + 1, right);
+            merge(left, right);
+		}
+	}
+};
+
+int main()
+{
+    mergeSort ms;
+    int value;
+    while( cout << "Enter a value:", 
+        cin >> value,
+        value)
+	{}
+
+
+}

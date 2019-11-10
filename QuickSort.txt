@@ -1,0 +1,86 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Quick
+{
+	vector<int> array;
+
+	void swap(int &num_1, int &num_2)
+	{
+		int c = num_1;
+		num_1 = num_2;
+		num_2 = c;
+	}
+
+	int partition(int left, int right)
+	{
+		int pivot = left;
+		left = pivot + 1;
+
+		// to traverse until right is greater than left
+		while (left <= right)
+		{
+			if (array[left] < array[pivot] && left <= right)
+				left++;
+			else if (array[right] > array[pivot])
+				right--;
+
+			if (left < right)
+				swap(array[left], array[right]);
+		}
+
+		// Cross over
+		swap(array[right], array[pivot]);
+
+		// updates pivot position
+		return right;
+	}
+
+	void quickSort(int left, int right)
+	{
+		if (left < right)
+		{
+			int pivot = partition(left, right);
+			quickSort(left, pivot - 1);
+			quickSort(pivot + 1, right);
+		}
+	}
+
+public:
+	void sort()
+	{
+		quickSort(0, array.size() - 1);
+	}
+
+	void add(int value)
+	{
+		array.push_back(value);
+	}
+
+	void print()
+	{
+		for (auto i : array)
+			cout << i << "\t";
+		cout << endl;
+	}
+};
+
+
+int main()
+{
+	Quick q;
+	int value;
+	while( cout << "Enter value [0 to stop]: ",
+		cin >> value,
+		value)
+	{
+		q.add(value);
+	}
+
+	q.sort();
+	q.print();
+
+	return 0;
+
+}

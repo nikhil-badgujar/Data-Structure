@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Heap
+{
+	vector<int> array;
+
+	void heapify(int size, int parent)
+	{
+		int left = parent*2+1;
+		int right = parent*2+2;
+		int largest = parent;
+
+		if(left < size && array[left] > array[parent])
+			largest = left;
+
+		if(right < size && array[right] > array[largest])
+			largest = right;
+
+		if(largest != parent)
+		{
+			swap(array[parent], array[largest]);
+			heapify(size, largest);
+		}
+	}
+
+public:
+	void add(int val)
+	{
+		array.push_back(val);
+	}
+
+	void sort()
+	{
+		for(int parent = array.size()/2-1; parent >=0; parent--)
+			heapify(array.size(), parent);
+
+		for(int parent = array.size()-1; parent >=0; parent--)
+		{
+			swap(array[0], array[parent]);
+			heapify(parent, 0);
+		}
+	}
+
+	void print()
+	{
+		for (auto i : array)
+			cout << i << "\t";
+		cout << endl;
+	}
+};
+
+
+int main()
+{
+	Heap h;
+	int val;
+
+	while (cout << "Enter a value(0 to stop): ",
+		cin >> val,
+		val
+		)
+	{
+		h.add(val);
+	}
+
+	h.sort();
+	h.print();
+
+	return 0;
+}
