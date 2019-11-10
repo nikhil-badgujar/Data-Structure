@@ -1,0 +1,115 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct Node
+{
+	int value;
+	Node *right;
+	Node *left;
+
+	Node(int value) : value(value), right(nullptr), left(nullptr)
+	{
+	}
+};
+
+class BinaryTree
+{
+	
+public:
+	Node *root;
+
+	BinaryTree() : root(nullptr)
+	{
+	}
+
+	Node* addNode(Node *node, int value)
+	{
+		if ( !node )
+			return new Node(value);
+
+		if ( value > node-> value )
+			node->right = addNode( node->right, value );
+		else 
+			node->left = addNode ( node->left, value );
+
+		return node;
+	}
+
+	void inOrder(Node *node)
+	{
+		if(node)
+		{
+			inOrder(node->left);
+			cout<<node->value<<endl;
+			inOrder(node->right);
+		}
+	}
+
+	void preOrder(Node *node)
+	{
+		if (node)
+		{
+			cout<<node->value<<endl;
+			preOrder(node->left);
+			preOrder(node->right);
+		}
+	}
+
+	void postOrder(Node *node)
+	{
+		if (node)
+		{
+			postOrder(node->left);
+			postOrder(node->right);
+			cout<<node->value<<endl;
+		}
+	}
+
+
+
+	void printDebugIN(Node *node)
+	{
+		static int level = 0;
+		if (node)
+		{
+			level++;
+			printDebugIN(node->right);
+			cout<<setw( level * 4 )<<node->value<<endl;
+			printDebugIN(node->left);
+			level--;
+		}
+	}
+
+};
+
+int main()
+{
+	BinaryTree ped;
+	int stopvalue, num;
+
+	cout<<"Enter Stop value : ";
+	cin>>stopvalue;
+
+	while ( cout<<"Enter value : ",
+			cin>>num,
+			num != stopvalue )
+	{
+		ped.root = ped.addNode(ped.root, num);
+	}
+
+	cout<<endl<<"InOrder: "<<endl;
+	ped.inOrder(ped.root);
+
+	cout<<endl<<"preOrder: "<<endl;
+	ped.preOrder(ped.root);
+
+	cout<<endl<<"postOrder: "<<endl;
+	ped.postOrder(ped.root);
+
+	cout<<endl<<"Tree : ";
+	ped.printDebugIN(ped.root);
+
+	return 0;
+
+}

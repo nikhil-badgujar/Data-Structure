@@ -1,0 +1,139 @@
+1)2D Array
+
+#include <stdio.h>
+#define R (5)
+#define C (3)
+int main()
+{
+	int aa[R][C];
+	int i, j;
+	for (i=0; i<R; i++)
+	{
+		for (j=0; j<C; j++)
+		{
+			printf("Enter Elements[%d][%d]", i, j);
+			scanf("%d", aa[i]+j);
+		}
+	}
+	for (i=0; i<R; i++)
+	{
+		for (j=0; j<C; j++)
+		{
+			printf("%d\t", *(aa[i]+j));
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
+
+
+2)pointer to array
+
+#include <stdio.h>
+#include <stdlib.h>
+#define C (3)
+int main()
+{
+	int (*pa)[C];
+	int i, j,size;
+	printf("Enter Size:");
+	scanf("%d", &size);
+	pa=(int (*)[C])malloc(size*sizeof(int [C]));
+	for (i=0; i<size; i++)
+	{
+		for (j=0; j<C; j++)
+		{
+			printf("Enter Elements[%d][%d]", i, j);
+			scanf("%d", pa[i]+j);
+		}
+	}
+	for (i=0; i<size; i++)
+	{
+		for (j=0; j<C; j++)
+		{
+			printf("%d\t", *(pa[i]+j));
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
+3)Array of pointer
+
+#include <stdio.h>
+#include <stdlib.h>
+#define R (3)
+int main()
+{
+	int *ap[R];
+	int i, j, size;
+	int arr[R];
+	
+	for (i=0; i<R; i++)
+	{
+		printf("Enter size:");
+		scanf("%d",&size);
+		arr[i]=size;
+
+		ap[i]=(int *)malloc(size*sizeof (int ));
+		for (j=0; j<size; j++)
+		{
+			printf("Enter Elements[%d][%d]", i, j);
+			scanf("%d", ap[i]+j);
+		}
+	}
+	for (i=0; i<R; i++)
+	{
+		for (j=0; j<arr[i]; j++)
+		{
+			printf("%d\t", *(ap[i]+j));
+		}
+		printf("\n");
+	}
+	return 0;
+}
+
+
+4)pointer to pointer
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+	int **pp;
+	int *p;
+	int i, j, R, C;
+	
+
+	printf("Enter Row:");
+	scanf("%d",&R);
+	
+	pp=(int * *)malloc(R*sizeof(int));
+	p=(int *)malloc(R*sizeof(int));
+
+
+	for ( i=0; i<R; i++)
+	{
+		printf("Enter Columns:");
+		scanf("%d",&C);
+		p[i]=C;
+
+		pp[i]=(int *)malloc(C*sizeof (int ));
+		for (j=0; j<C; j++)
+		{
+			printf("Enter Elements[%d][%d]", i, j);
+			scanf("%d", pp[i]+j);
+		}
+	}
+	for (i=0; i<R; i++)
+	{
+		for (j=0; j<p[i]; j++)
+		{
+			printf("%d\t", *(pp[i]+j));
+		}
+		printf("\n");
+	}
+	return 0;
+}

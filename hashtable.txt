@@ -1,0 +1,111 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+using namespace std;
+
+class Hashtable
+{
+private:
+	struct Entry
+	{
+		int key;
+		string name;
+		Entry *next;
+
+		Entry( int key, const string &name) : key(key), name(name), next(nullptr)
+		{
+		}
+	};
+
+	int size;
+	Entry **table;
+
+public:
+	int offset;
+
+	Hashtable(int s = 10) : size(s)
+	{
+		table = new Entry*[size = s];
+		for(int offset = 0; offset < size; offset++ )
+			table[offset] = nullptr;
+	}
+
+
+	int hash (int key)
+	{
+		int offset;
+		offset = key % size;
+		return offset;
+	}
+
+	void put (int key, const string &name)
+	{
+		int offset = hash(key);
+
+		for(Entry *current = table[offset]; current; current= current->next)
+		{
+			if (current->key == key)
+			{
+				current->name = name;
+				return;
+			}
+		}
+
+		Entry *newNode = new Entry(key,name);
+
+		newNode->next = table[offset];
+		table[offset] = newNode;
+
+	}
+
+	bool get(int key, string name)
+	{
+        int offset = hash(key);
+
+		for(Entry *current = table[offset]; current; current = current->next)
+		{
+			if(current->key == key)
+			{
+				cout<< key <<" belongs to "<<name<<endl;
+                return true;
+			}
+
+      	}
+        return false;
+	}
+
+    void printDebug()
+	{
+        for (int offset = 0; offset < size; offset++)
+		{
+            cout<< setw(2) << offset<< " : ";
+
+			for (Entry *current = table[offset]; current; current = current->next )
+			{
+                cout<< "[" <<current->key << " : " <<current->name << "]";
+			}
+            cout<<endl;
+		}
+	}
+    
+};
+
+int main()
+{
+	Hashtable h;
+    int key;
+    string name;
+
+    while( cout<<"Enter Key , valiue : ",
+        cin>>key>>name,
+        key)
+	{
+        h.put(key, name);
+	}
+
+	h.printDebug();
+
+    return 0;
+}
+
+

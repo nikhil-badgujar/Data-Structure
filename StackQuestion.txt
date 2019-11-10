@@ -1,0 +1,73 @@
+#include <iostream>
+using namespace std;
+
+template<class T>
+class Stack
+{
+private:
+	int size;
+	int top;
+	T *p;
+
+public:
+	Stack(int size = 10)
+	{
+		this->size = size;
+		p = new T[size];
+		top = -1;
+	}
+
+	void push(T value)
+	{
+
+		if (top == size-1)
+		{
+			throw "StackOverFlow";
+		}
+		p[++top] = value;
+
+	}
+
+	T pop()
+	{
+		if (top == -1)
+		{
+			throw "StacKUnderFlow";
+		}
+		return  p[top--];
+	}
+
+	/*void inc(int no, T how)
+	{
+	for(int i = 0; i < no; i++)
+	{
+	p[top - i] += how;
+	cout << "Inc: " << p[top - i] << endl;
+	}
+	}*/
+
+
+};
+
+int main()
+{
+	Stack<char> s(10);
+
+	try
+	{
+		for (char c = 'A'; c < 'K'; c++)
+			s.push(c);
+
+
+		for (char c = 'A'; c < 'K'; c++)
+			cout << s.pop() <<endl;
+	}
+	catch(runtime_error *msg)
+	{
+		cout << msg;
+	}
+
+	//s.inc(2, 'F');
+}
+
+

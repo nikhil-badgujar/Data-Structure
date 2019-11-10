@@ -1,0 +1,129 @@
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+template <class P, class V>
+class PriorityQueue
+{
+private:
+	template <class Q, class W>
+	struct Node
+	{
+		Q priority;
+		W value;
+		Node *next;
+
+		Node ( Q priority, W value): priority(priority), value(value), next(nullptr)
+		{
+		}
+
+	};
+
+	Node <P, V> *head;
+	int count;
+
+public:
+	PriorityQueue()
+		: head(nullptr) , count(0)
+	{}
+
+	void push(P priority, V value)
+	{
+		Node<P , V> *newNode = new Node<P, V>(priority, value);
+		count++;
+
+		Node <P, V> *back = nullptr;
+
+		Node <P, V> *current = nullptr;
+
+		if (nullptr == head)
+		{
+			head = newNode;
+			return;
+		}
+
+		for ( current = head; 
+			current != nullptr && priority> current->priority ; 
+			current = current ->next )
+		{
+			
+			if ( priority < current->priority )
+				break;
+
+				back = current;
+		}
+
+		if (nullptr == back)
+		{
+			newNode->next = head;
+			head = newNode;
+			return;
+		}
+
+		if ( nullptr == current )
+		{
+			back->next = newNode;
+			return;
+		}
+
+		// Add the node to the back
+		newNode ->next = current;
+		back ->next = newNode;
+		return;
+
+
+	}
+
+	V pop()
+	{
+		if ( nullptr == head )
+			throw "Queue is Empty ";
+
+		V result = head->value;
+
+		Node<P, V> *temp = head;
+
+		head = head->next;
+
+		delete temp;
+
+		count--;
+
+		return result;
+	}
+
+	int length()
+	{
+		return count;
+	}
+
+
+};
+
+
+int main()
+{
+	PriorityQueue<int, double> p;
+	int stopvalue,num;
+	double num1;
+
+	cout<<"Enter stop value : ";
+	cin>>stopvalue;
+
+	while (	cout<<"Enter priority : ",
+		cin>>num,
+		num != stopvalue )
+	{
+		cout<<"Enter data : ";
+		cin>>num1;
+
+		p.push(num, num1);
+	}
+
+	int count = p.length();
+	for(int i = 0; i< count ; i++)
+		cout<<p.pop()<<endl;
+
+	return 0;
+}
+

@@ -1,0 +1,237 @@
+#include <iostream>
+#include <conio.h>
+using namespace std;
+
+class Node
+{
+public:
+	int value;
+	Node *next;
+	Node *prev;
+
+	Node(int value)
+	{
+		this->value = value;
+		this->prev = nullptr;
+		this->next = nullptr;		
+	}
+};
+
+class DoublyLinkedList
+{
+	Node *head;
+	Node *tail;
+public:
+	DoublyLinkedList() : head(nullptr),tail(nullptr)
+	{}
+
+	void addToBack(int value)
+	{
+		Node *newnode = new Node(value);
+
+		if(nullptr == head)
+		{	
+			head = newnode;
+		}
+		else
+		{		
+			tail->next = newnode;
+			newnode->prev = tail;
+		}
+		tail = newnode;
+	}
+
+	void addToFront(int value)
+	{
+		Node *newnode = new Node(value);
+
+		if(nullptr == head)
+		{
+			tail = newnode;
+		}
+		else
+		{
+			newnode->next = head;
+			head->prev = newnode;			
+		}
+		head = newnode;
+	}
+
+	void printForward()
+	{
+		Node *current;
+		cout<<endl<<"Printing Forward:	";
+		for (current = head; current; current = current->next)
+			cout<<current->value<<"\t";
+	}
+
+	void printBackward()
+	{
+		Node *current;
+		cout<<endl<<"Printing Backward:  ";
+		for (current = tail; current; current = current->prev)
+			cout<<current->value<<"\t";
+	}
+
+	int remove(int value)
+	{
+		for(Node *p = head; p; p=p->next)
+		{
+			if(p->value == value)
+			{
+				if(p == head && p == tail)
+				{
+					delete p;
+					head = nullptr;
+					tail = nullptr;
+					return 1;
+				}
+
+				if (p == tail)
+				{
+					tail = tail->prev;
+					tail->next = nullptr;
+					delete p;
+					return 3;
+				}
+
+				if (p == head)
+				{
+					head = head->next;
+					head->prev = nullptr;
+					delete p;
+					return 2;
+				}
+
+				p->prev->next = p->next;
+				p->next->prev = p->prev;
+				delete p;
+				return 4;
+			}
+		}
+		return false;
+	}
+
+	bool insertBefore(int searchValue, int insertValue)
+	{
+		for (Node *p = head; p; p = p->next)
+		{
+			if(p->value == searchValue)
+			{
+				if(p == head && p == tail)
+				{
+					if(p->prev == nullptr)
+					{
+						addToFront(insertValue);
+						return true;
+					}
+				}
+
+				//Warnaa...!!!
+				Node *newnode = new Node(insertValue);
+				newnode->next = p;
+				newnode->prev = p->prev;
+				newnode->prev->next = newnode;
+				newnode->next->prev = newnode;
+				return true;
+			}
+		}
+		return false;
+	}
+
+		bool insertAfter(int searchValue, int insertValue)
+		{
+			for(Node *p = head; p; p=p->next)
+			{
+				Node *newnode = new Node(insertValue);
+				cout<<"beep"<<endl;
+				if(p->value == searchValue)
+				{
+					if(p == head && p == tail)
+					{
+						tail->next = newnode;
+						newnode->prev = tail;
+						return true;
+					}
+
+					if(p == tail)
+					{
+						tail->next =newnode;
+						newnode->prev = tail;
+						return true;
+					}
+
+					newnode->prev = p;
+					newnode->next = p->next;
+					newnode->prev->next = newnode;
+					newnode->next->prev = newnode;
+					return true;
+				}
+			}
+			return false;
+		}
+
+		int removeAll()
+		{
+			int cnt = 0;
+			Node *temp = nullptr;
+			while(head)
+			{
+				temp = head;
+				head = head->next;
+				delete temp;
+				cnt++;
+			}
+			tail = nullptr;
+			return cnt;
+		}
+
+	};
+
+	int main()
+	{
+		DoublyLinkedList d;
+		int num;
+
+		while(cout<<"Enter Number to add to the list (0 to stop) ",
+			cin>>num,
+			num)
+		{
+			d.addToBack(num);
+		}
+
+		d.printForward();
+
+		d.addToFront(9);
+		d.printForward();
+
+		cout<<endl;
+		d.printBackward();
+
+		cout<<endl;
+		while(cout<<"Enter Number to remove (0 to stop)",
+			cin>>num,
+			num)
+		{
+			if( d.remove(num) )
+				cout<<"Value "<<num<<" Deleted"<<endl;
+			else
+				cout<<"Value "<<num<<" Not Found"<<endl;
+
+			d.printForward();
+		}
+
+		//inseting after Number
+		cout<<"Inserting after: "<<d.insertAfter(9,3)<<endl;
+		d.printForward();
+
+		cout<<endl;
+		//inserting before Number
+		cout<<"Inserting before: "<<d.insertBefore(3,99)<<endl;
+		d.printForward();
+
+		cout<<endl<<"Count of Deleted node: "<<d.removeAll()<<endl;
+
+		getch();
+		return 0;
+	}

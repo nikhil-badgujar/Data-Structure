@@ -1,0 +1,298 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+struct Node
+{
+	int value;
+	Node *left;
+	Node *right;
+
+	Node(int value) : value(value),left(nullptr), right(nullptr)
+	{
+	}
+};
+
+class BinaryTree
+{
+private:
+
+	Node *reBalance(Node *node)
+	{
+		if(node)
+		{
+			int bal = balance(node);
+
+			//check the condiion of AVL
+			if(bal == 2)
+			{
+				int bal = balance(node->right);
+
+				//R-R heavy
+				if(bal == 1)
+				{
+					node = rotateLeft(node);
+				}
+
+				//R-L Heavy
+				else if(bal == -1)
+				{
+					node = rotateRightLeft(node);
+				}
+			}
+
+			if(bal == -2)
+			{
+				int bal = balance(node->left);
+
+				//L-L heavy
+				if(bal == -1)
+				{
+					node = rotateRight(node);
+				}
+
+				//L-R heavy
+				if(bal == 1)
+				{
+					node = rotateLeftRight(node);
+				}
+			}
+		}
+		return node;
+	}
+
+	int balance(Node *node)
+	{
+		if(node)
+			return height(node->right) - height(node->left);
+		else
+			return 0;
+	}
+
+	int height(Node *node)
+	{
+		if(nullptr == node)
+			return 0;
+
+		int rightheight = height(node->right);
+		int leftheight = height(node->left);
+
+		int higher = max(rightheight, leftheight);
+
+		return higher + 1;
+	}
+
+	Node *rotateLeft(Node *parent)
+	{
+		Node *child = parent->right;
+		Node *grandchild = child->left;
+
+		parent->right = grandchild;
+		child->left = parent;
+
+		return child;
+	}
+
+	Node *rotateRight(Node *parent)
+	{
+		Node *child = parent->left;
+		Node *grandchild = child->right;
+
+		parent->left = grandchild;
+		child->right = parent;
+
+		return child;
+	}
+
+	Node *rotateRightLeft(Node *parent)
+	{
+		Node *child = parent->right;
+		Node *grandchild = child->left;
+
+		child = rotateRight(child);
+		parent = rotateLeft(parent);
+
+		return parent;
+	}
+
+	Node *rotateLeftRight(Node *parent)
+	{
+		Node *child = parent->left;
+		Node *grandchild = child->right;
+
+		child = rotateLeft(child);
+		parent = rotateRight(parent);
+
+		return parent;
+	}
+
+
+	Node *addNode(Node *node, int value)
+	{
+		if (nullptr == node)
+			return new Node(value);
+
+		if(value > node->value)
+			node->right = addNode(node->right, value);
+		else
+			node->left = addNode(node->left, value);
+
+		node = reBalance(node);
+		return node;
+	}
+
+	void inOrder(Node *node)
+	{
+		if(node)
+		{
+			inOrder(node->left);
+			cout<<node->value<<endl;
+			inOrder(node->right);
+		}
+	}
+
+	void preOrder(Node *node)
+	{
+		if(node)
+		{
+			cout<<node->value<<endl;
+			inOrder(node->left);
+			inOrder(node->right);
+		}
+	}
+
+	void postOrder(Node *node)
+	{
+		if(node)
+		{
+			inOrder(node->left);
+			inOrder(node->right);
+			cout<<node->value<<endl;
+		}
+	}
+
+	Node *removeNode(Node *node, int value)
+	{
+		if (value > node->value)
+			node->right = removeNode(node->right, value);
+
+		else if(value < node->value)
+			node->left = removeNode(node->left, value);
+
+		else
+		{
+			if (nullptr == node->left && nullptr == node->right)
+			{
+				delete node;
+				return nullptr;
+			}
+
+			if (nullptr != node->left && nullptr == node->right)
+			{
+				Node *orphan = node->left;
+				delete node;
+				return orphan;
+			}
+
+			if (nullptr == node->left && nullptr != node->right)
+			{
+				Node *orphan = node->right;
+				delete node;
+				return orphan;
+			}
+
+			Node *succesor = node->right;
+
+			while (succesor->left != nullptr)
+				succesor = succesor->left;
+
+			node->value = succesor->value;
+			node->right = removeNode(node->right, succesor->value);
+		}
+		node = reBalance(node);
+		return node;
+	}
+
+	void printDebugIn(Node *node)
+	{
+		static int level = 0;
+		if(node)
+		{
+			level++;
+			printDebugIn(node->right);
+			cout<<setw(level*4)<<node->value<<endl;
+			printDebugIn(node->left);
+			level--;
+		}
+	}
+
+public:
+	Node *root;
+
+	BinaryTree() : root(nullptr)
+	{
+	}
+
+	void add(int value)
+	{
+		root = addNode(root, value);
+	}
+
+	void print()
+	{
+		inOrder(root);
+	}
+
+	void save()
+	{
+		preOrder(root);
+	}
+
+	void removeAll()
+	{
+		postOrder(root);
+	}
+
+	void removeOne(int value)
+	{
+		root = removeNode(root, value);
+	}
+
+	void printTree()
+	{
+		printDebugIn(root);
+	}
+
+
+};
+
+int main()
+{
+	BinaryTree b;
+	int num,stop;
+	cout<<"Stop value: ";
+	cin>>stop;
+
+	while(cout<<"Enter num ("<<stop<<" to stop) : ", cin>>num, num != stop)
+	{
+		b.add(num);
+		b.printTree();
+	}
+
+	cout<<endl<<"Inorder : "<<endl;
+	b.print();
+
+	cout<<endl<<"PreOrder : "<<endl;
+	b.save();
+
+	cout<<endl<<"PostOrder : "<<endl;
+	b.removeAll();
+
+	while( cout<<endl<<"Enter num to remove ("<<stop<<" to stop) : ", cin>>num, num != stop)
+	{
+		b.removeOne(num);
+		b.printTree();
+	}
+
+	return 0;
+}

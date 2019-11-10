@@ -1,0 +1,168 @@
+#include <iostream>
+#include <conio.h>
+using namespace std;
+
+class SentinelList
+{
+private:
+	struct Node
+	{
+		int value;
+		Node *prev;
+		Node *next;
+
+		Node(int value)
+		{
+			this->value = value;
+			this->prev = nullptr;
+			this->next = nullptr;
+		}
+	};
+	Node *tail;
+	Node *head;
+
+public:
+	SentinelList()
+	{
+		//Sentinel Nodes
+		head = new Node(0);
+		tail = new Node(0);
+		tail->prev = head;
+		head->next = tail;
+	}
+
+	void insert(Node *current,int value)
+	{
+		Node *newnode = new Node(value);
+
+		newnode->next = current;
+		newnode->prev = current->prev;
+		current->prev->next = newnode;
+		current->prev = newnode;
+	}
+
+	void addToBack(int value)
+	{
+		insert(tail,value);
+	}
+
+	void addToFront(int value)
+	{
+		insert(head->next, value);
+	}
+	
+	//print forward
+	void printForward()
+	{
+		cout<<"Printing Forward: ";
+		for(Node *current= head->next; current!= tail; current = current->next)
+		{
+			cout<<current->value<<"\t";
+		}
+	}
+
+	void printBackward()
+	{
+		cout<<"Printing Backward: ";
+		for (Node *current = tail->prev; current != head; current = current->prev )
+		{
+			cout<<current->value<<"\t";
+		}
+	}
+
+	bool remove(int value)
+	{
+		for( Node *current = head->next; current != tail; current = current->next)
+		{
+			if( current->value == value )
+			{
+				current->prev->next = current->next;
+				current->next->prev = current->prev;
+				delete current;
+				return true;
+			}
+		}
+		//tail->prev =head;
+		return false;
+	}
+
+	bool insertAfter(int search, int value)
+	{
+		for (Node *current = head->next; current != tail; current = current->next )
+		{
+			if ( current->value == search )
+			{
+				insert(current->next, value );
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool insertBefore(int search, int value)
+	{
+		for (Node *current = head->next; current != tail; current = current->next )
+		{
+			if ( current->value == search )
+			{
+				insert(current, value );
+				return true;
+			}
+		}
+		return false;
+	}
+
+	int removeAll()
+	{
+		int cnt = 0;
+		while(head->next != tail)
+		{
+			head->next = head->next->next;
+			delete head->next->prev;
+			cnt++;
+			
+		}
+		tail->prev = head;
+		return cnt;
+	}
+
+};
+int main()
+{
+	int num,z;
+	SentinelList s;
+	while(cout<<"enter values", cin>>num, num)
+	{
+		s.addToBack(num);
+	}
+	s.printForward();
+	cout<<endl;
+	s.printBackward();
+
+	cout<<endl;
+	s.addToFront(9);
+	s.printForward();
+
+	cout<<endl;
+	
+	while ( cout<<"Remove Whatt!! ", cin>>num, num )
+	{
+		s.remove(num);
+	}
+	s.printForward();
+
+	s.insertAfter(9,3);
+	cout<<endl<<"New List:	"<<endl;
+	s.printForward();
+
+	s.insertBefore(7,99);
+	cout<<endl<<"New List:	"<<endl;
+	s.printForward();
+
+	z = s.removeAll();
+	cout<<endl<<"Count is: "<<z<<endl;
+		
+	getch();
+	return 0;
+}
+

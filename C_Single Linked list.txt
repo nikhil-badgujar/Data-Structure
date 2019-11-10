@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+
+// defining structure
+struct node
+{
+	int value;
+	struct node *next;
+};
+
+// defining global variables
+struct node *head=NULL;
+struct node *tail=NULL;
+struct node *current;
+
+void addToBack(int value)
+{
+	//create new node
+	struct node *newnode = (struct node *)malloc(1 * sizeof (struct node));
+
+	//set user given value inside node
+	newnode->value = value;
+	newnode->next = NULL;
+
+	//If this is the first node then head will be NULL
+	//2nd node onwards will go to next
+	if (NULL == head)
+		head = newnode;
+	else
+		tail->next = newnode;
+	tail = newnode;
+}
+
+//to add new node
+void addToFront(int newvalue)
+{
+	struct node *newnode = (struct node *)malloc(sizeof(struct node));
+	newnode->value = newvalue;
+	newnode->next = NULL;
+	if (NULL == head)
+		tail = newnode;
+	else
+		newnode->next = head;
+	head = newnode;
+}
+
+//print all nodes in Linked List
+void printForward()
+{
+	for (current = head; current != NULL; current=current->next)
+		printf("%d\t",current->value);
+}
+
+int main()
+{
+	struct node *newnode;
+	int num;
+
+	//adding to front
+	addToFront(99);
+	printForward();
+
+	// Keep taing input from user
+	while (printf("Enter Number (0 to stop): "),
+		scanf("%d", &num),
+		num!=0)
+	{
+		addToBack(num);
+	};
+
+	//adding to front again
+	addToFront(11);
+	printForward();
+	
+	getch();
+	return 0;
+}
